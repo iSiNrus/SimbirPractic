@@ -2,4 +2,8 @@
     <string name="app_name">SimbirPractic</string>
     <string name="app_title">Хочу помочь</string>
     <string name="loading">Загрузка…</string>
+    <string name="content_description_edit">EditProfile</string>
+    <string name="edit">Edit</string>
+    <string name="friends_title">Ваши друзья</string>
+    <string name="logout_button">Выйти из аккаунта</string>
 </resources>
