@@ -2,7 +2,6 @@ package ru.barsik.simbirpractic
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.view.get
 import ru.barsik.simbirpractic.databinding.ActivityProfileBinding
 
 class ProfileActivity : AppCompatActivity() {

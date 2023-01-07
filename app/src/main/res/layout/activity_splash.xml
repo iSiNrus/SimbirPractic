@@ -22,6 +22,7 @@
         android:id="@+id/iv_splash_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/splash_description_logo"
         android:src="@drawable/ic_vector_splash_logo"
         app:layout_constraintBottom_toTopOf="@+id/guideline_logo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,8 +59,8 @@
             android:id="@+id/iv_logo_mss"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_marginBottom="40dp"
+            android:contentDescription="@string/splash_description_simbirsoft"
             android:src="@drawable/logo_mss"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

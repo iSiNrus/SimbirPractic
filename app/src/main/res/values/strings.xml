@@ -19,4 +19,22 @@ Nullam eget felis eget nunc lobortis mattis. Justo donec enim diam vulputate ut.
 Tortor id aliquet lectus proin. Tristique et egestas quis ipsum suspendisse ultrices gravida dictum fusce. Porta nibh venenatis cras sed felis eget. Consequat nisl vel pretium lectus quam id leo. Platea dictumst quisque sagittis purus sit. Tincidunt augue interdum velit euismod in pellentesque massa. Justo eget magna fermentum iaculis eu non diam. Gravida neque convallis a cras semper auctor. Sagittis vitae et leo duis ut diam quam nulla porttitor. Lectus magna fringilla urna porttitor rhoncus dolor purus.
 
 Nisl vel pretium lectus quam id leo in vitae. Netus et malesuada fames ac turpis egestas maecenas pharetra. Consequat id porta nibh venenatis cras sed felis eget velit. Facilisi nullam vehicula ipsum a arcu. Dolor sit amet consectetur adipiscing. In pellentesque massa placerat duis ultricies lacus sed turpis. Quis imperdiet massa tincidunt nunc pulvinar sapien et. Interdum velit laoreet id donec ultrices tincidunt arcu. Fermentum leo vel orci porta non. Nulla at volutpat diam ut venenatis tellus in metus. Tincidunt eget nullam non nisi est sit. Et malesuada fames ac turpis egestas.</string>
+    <string name="profile_name">Константинов Денис</string>
+    <string name="profile_title_birthday">Дата рождения</string>
+    <string name="profile_birthday">01 февраля 1980</string>
+    <string name="profile_activity_sphere_title">Сфера деятельности</string>
+    <string name="profile_activity_sphere">Хирургия, травмотология</string>
+    <string name="profile_push">Получать Push-уведомления</string>
+    <string name="profile_description_friend_avatar">profile_descr_friend_avatar</string>
+    <string name="profile_avatar">profile_avatar</string>
+    <string name="profile_friend_name_1">Дмитрий Валерьевич</string>
+    <string name="profile_friend_name_2">Евгений Александров</string>
+    <string name="profile_friend_name_3">Виктор Кузнецов</string>
+    <string name="splash_description_logo">description_logo</string>
+    <string name="splash_description_simbirsoft">description_simbirsoft</string>
+    <string name="nav_news">Новости</string>
+    <string name="nav_search">Поиск</string>
+    <string name="nav_help">Помочь</string>
+    <string name="nav_history">История</string>
+    <string name="nav_profile">Профиль</string>
 </resources>
