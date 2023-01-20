@@ -7,6 +7,7 @@ import android.content.DialogInterface
 import android.database.DataSetObserver
 import android.os.Bundle
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListAdapter
@@ -14,7 +15,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import ru.barsik.simbirpractic.R
 
-class ProfileAvatarDialog : DialogFragment() {
+class ProfileAvatarDialog(private val listener: (DialogInterface, Int) -> Unit) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             // Use the Builder class for convenient dialog construction
@@ -29,14 +30,17 @@ class ProfileAvatarDialog : DialogFragment() {
                     requireContext(),
                     R.layout.alarm_dialog_item,
                     items
-                )
-            ) { _, which ->
-                when (which) {
-                    0 -> Toast.makeText(requireContext(), "Выбрать фото...", Toast.LENGTH_SHORT).show()
-                    1 -> Toast.makeText(requireContext(), "Камера...", Toast.LENGTH_SHORT).show()
-                    2 -> Toast.makeText(requireContext(), "Удаление...", Toast.LENGTH_SHORT).show()
-                }
-            }
+                ),
+                listener
+            )
+//                    _, which ->
+//                when (which) {
+//                    0 -> Toast.makeText(requireContext(), "Выбрать фото...", Toast.LENGTH_SHORT).show()
+//                    1 -> {}
+////                    Toast.makeText(requireContext(), "Камера...", Toast.LENGTH_SHORT).show()
+//                    2 -> Toast.makeText(requireContext(), "Удаление...", Toast.LENGTH_SHORT).show()
+//                }
+
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
