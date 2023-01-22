@@ -36,11 +36,6 @@ class CategoriesFragment : Fragment() {
             Pair("Взрослые", R.drawable.adults),
             Pair("Пожилые", R.drawable.elderly),
             Pair("Животные", R.drawable.animals),
-            Pair("Мероприятия", R.drawable.events),
-            Pair("Дети", R.drawable.children),
-            Pair("Взрослые", R.drawable.adults),
-            Pair("Пожилые", R.drawable.elderly),
-            Pair("Животные", R.drawable.animals),
             Pair("Мероприятия", R.drawable.events)
         )
         binding.categoryRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
