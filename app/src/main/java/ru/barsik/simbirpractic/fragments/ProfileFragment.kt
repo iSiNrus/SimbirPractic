@@ -1,24 +1,23 @@
 package ru.barsik.simbirpractic.fragments
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.graphics.decodeBitmap
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.setFragmentResultListener
 import ru.barsik.simbirpractic.MainActivity
 import ru.barsik.simbirpractic.R
 import ru.barsik.simbirpractic.databinding.FragmentProfileBinding
-import java.io.InputStream
+import java.io.File
 
 
 class ProfileFragment : Fragment() {
@@ -31,27 +30,19 @@ class ProfileFragment : Fragment() {
             parentFragmentManager.commit {
                 replace(R.id.fragment_container, ProfileFragment())
                 (requireActivity() as MainActivity).showNavigation()
-//                addToBackStack(null)
             }
-            if(!bundle.isEmpty) {
+            if (!bundle.isEmpty) {
                 val path = bundle.getString(CameraFragment.BUNDLE_PATH)
                 Toast.makeText(
                     requireContext(),
                     "Get Photo From Camera Fragment $path",
                     Toast.LENGTH_SHORT
                 ).show()
-                val myUri = Uri.parse("content:/$path")
-                Log.d(TAG, "uri= $myUri")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    val bmp = ImageDecoder.createSource(requireActivity().contentResolver, myUri)
-                    val bitmap = ImageDecoder.decodeBitmap(bmp)
-                    binding.ivAvatar.setImageBitmap(bitmap)
-                }
 
-            }
-            else
-                Toast.makeText(requireContext(), "Empty", Toast.LENGTH_SHORT)
-                    .show()
+                val bitmap = BitmapFactory.decodeFile(path)
+                AVATAR_BITMAP = bitmap
+            } else
+                Toast.makeText(requireContext(), "Empty", Toast.LENGTH_SHORT).show()
 
         }
     }
@@ -61,6 +52,8 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileBinding.inflate(layoutInflater)
+        if(AVATAR_BITMAP==null) AVATAR_BITMAP =  BitmapFactory.decodeResource(resources, R.drawable.image_man)
+        binding.ivAvatar.setImageBitmap(AVATAR_BITMAP)
         binding.ivAvatar.setOnClickListener {
             val dialog = ProfileAvatarDialog { _, which ->
                 when (which) {
@@ -77,5 +70,9 @@ class ProfileFragment : Fragment() {
             dialog.show(parentFragmentManager, "avatar")
         }
         return binding.root
+    }
+
+    companion object {
+        private var AVATAR_BITMAP : Bitmap? = null
     }
 }

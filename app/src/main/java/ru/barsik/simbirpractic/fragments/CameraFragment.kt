@@ -2,7 +2,9 @@ package ru.barsik.simbirpractic.fragments
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Context
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.loader.content.CursorLoader
 import ru.barsik.simbirpractic.databinding.FragmentCameraBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,6 +33,7 @@ class CameraFragment : Fragment() {
     private val TAG = "CameraFragment"
 
     private lateinit var binding: FragmentCameraBinding
+    private lateinit var ctx : Context
 
     private lateinit var cameraExecutor: ExecutorService
     private var cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
@@ -41,7 +45,7 @@ class CameraFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCameraBinding.inflate(layoutInflater)
-
+        ctx = requireContext()
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera(cameraSelector)
@@ -64,8 +68,6 @@ class CameraFragment : Fragment() {
         }
         binding.btnTakePhoto.setOnClickListener {
             takeAndSavePhoto()
-//            setFragmentResult("photo", Bundle().also { it.putString("data", "photo_keyword") })
-//            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
         return binding.root
     }
@@ -73,28 +75,12 @@ class CameraFragment : Fragment() {
     /**
      * TODO Надо принимать путь до файла и его передеавать как результат
      * */
-    private fun finishFragment(uri: Uri?) {
-        val bundleRes = if (uri != null) Bundle().also { it.putString(BUNDLE_PATH, uri.path) }
+    private fun finishFragment(path: String?) {
+        val bundleRes = if (path != null) Bundle().also { it.putString(BUNDLE_PATH, path) }
         else Bundle.EMPTY
         setFragmentResult("photo", bundleRes)
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }
-
-    private fun takePhoto() {
-        val imageCapture = imageCapture ?: return
-        imageCapture.takePicture(ContextCompat.getMainExecutor(requireActivity()),
-            object : OnImageCapturedCallback() {
-                override fun onCaptureSuccess(image: ImageProxy) {
-                    super.onCaptureSuccess(image)
-                }
-
-                override fun onError(exception: ImageCaptureException) {
-                    super.onError(exception)
-                }
-            }
-        )
-    }
-
 
     private fun takeAndSavePhoto() {
         // Get a stable reference of the modifiable image capture use case
@@ -133,10 +119,19 @@ class CameraFragment : Fragment() {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Log.d(TAG, msg)
-                    finishFragment(output.savedUri)
+                    val proj = arrayOf(MediaStore.Images.Media.DATA)
+                    val loader = CursorLoader(ctx, output.savedUri!!, proj, null, null, null)
+                    val cursor: Cursor = loader.loadInBackground()!!
+                    val column_index: Int =
+                        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                    cursor.moveToFirst()
+                    val result: String = cursor.getString(column_index)
+                    cursor.close()
+                    finishFragment(result)
                 }
             }
         )
+
     }
 
     @Deprecated("Deprecated in Java")
