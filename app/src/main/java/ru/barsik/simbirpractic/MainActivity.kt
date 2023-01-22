@@ -9,14 +9,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.setFragmentResult
 import ru.barsik.simbirpractic.databinding.ActivityMainBinding
 import ru.barsik.simbirpractic.fragments.CameraFragment
+import ru.barsik.simbirpractic.fragments.CategoriesFragment
 import ru.barsik.simbirpractic.fragments.ProfileFragment
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,25 +31,46 @@ class MainActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         } else {
-            supportFragmentManager.commit {
-                add(R.id.fragment_container, ProfileFragment())
+           switchFragment(CategoriesFragment())
+        }
+
+        binding.bottomNavigation.selectedItemId = R.id.navig_help
+
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navig_help -> {
+                    switchFragment(CategoriesFragment())
+                    true
+                }
+                R.id.navig_profile -> {
+                    switchFragment(ProfileFragment())
+                    true
+                }
+                else -> false
             }
         }
 
-        binding.bottomNavigation.selectedItemId = R.id.navig_profile
-
     }
 
-    fun hideNavigation(){
+    private fun switchFragment(fm: Fragment) {
+        supportFragmentManager.commit {
+            replace(R.id.fragment_container, fm)
+        }
+    }
+
+    fun hideNavigation() {
         binding.bottomNavigation.visibility = View.GONE
     }
 
-    fun showNavigation(){
+    fun showNavigation() {
         binding.bottomNavigation.visibility = View.VISIBLE
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(applicationContext, it) == PackageManager.PERMISSION_GRANTED
+        ContextCompat.checkSelfPermission(
+            applicationContext,
+            it
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
@@ -59,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 supportFragmentManager.commit {
-                    add(R.id.fragment_container, ProfileFragment())
+                    add(R.id.fragment_container, CategoriesFragment())
                 }
             } else return
         }
