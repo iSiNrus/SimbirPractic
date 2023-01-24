@@ -1,23 +1,18 @@
-package ru.barsik.simbirpractic.fragments
+package ru.barsik.simbirpractic.fragments.profile
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.setFragmentResultListener
 import ru.barsik.simbirpractic.MainActivity
 import ru.barsik.simbirpractic.R
 import ru.barsik.simbirpractic.databinding.FragmentProfileBinding
-import java.io.File
 
 
 class ProfileFragment : Fragment() {
@@ -52,7 +47,7 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileBinding.inflate(layoutInflater)
-        if(AVATAR_BITMAP==null) AVATAR_BITMAP =  BitmapFactory.decodeResource(resources, R.drawable.image_man)
+        if(AVATAR_BITMAP ==null) AVATAR_BITMAP =  BitmapFactory.decodeResource(resources, R.drawable.image_man)
         binding.ivAvatar.setImageBitmap(AVATAR_BITMAP)
         binding.ivAvatar.setOnClickListener {
             val dialog = ProfileAvatarDialog { _, which ->

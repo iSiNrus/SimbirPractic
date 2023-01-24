@@ -5,17 +5,15 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.fragment.app.setFragmentResult
 import ru.barsik.simbirpractic.databinding.ActivityMainBinding
-import ru.barsik.simbirpractic.fragments.CameraFragment
 import ru.barsik.simbirpractic.fragments.CategoriesFragment
-import ru.barsik.simbirpractic.fragments.ProfileFragment
+import ru.barsik.simbirpractic.fragments.profile.ProfileFragment
+import ru.barsik.simbirpractic.fragments.search.SearchFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -44,6 +42,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navig_profile -> {
                     switchFragment(ProfileFragment())
+                    true
+                }
+                R.id.navig_search -> {
+                    switchFragment(SearchFragment())
                     true
                 }
                 else -> false

@@ -1,4 +1,4 @@
-package ru.barsik.simbirpractic.fragments
+package ru.barsik.simbirpractic.fragments.profile
 
 import android.app.Service
 import android.content.Context

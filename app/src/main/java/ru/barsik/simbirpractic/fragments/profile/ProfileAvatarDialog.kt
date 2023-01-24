@@ -1,17 +1,9 @@
-package ru.barsik.simbirpractic.fragments
+package ru.barsik.simbirpractic.fragments.profile
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
-import android.database.DataSetObserver
 import android.os.Bundle
-import android.view.View
-import android.view.View.OnClickListener
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListAdapter
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import ru.barsik.simbirpractic.R
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="events_list">
+        <item>Мероприятие 1</item>
+        <item>Мероприятие 2</item>
+        <item>Мероприятие 3</item>
+        <item>Мероприятие 4</item>
+        <item>Мероприятие 5</item>
+        <item>Мероприятие 6</item>
+        <item>Мероприятие 7</item>
+        <item>Мероприятие 8</item>
+        <item>Мероприятие 9</item>
+        <item>Мероприятие 10</item>
+        <item>Мероприятие 11</item>
+        <item>Мероприятие 12</item>
+        <item>Мероприятие 13</item>
+        <item>Мероприятие 14</item>
+        <item>Мероприятие 15</item>
+        <item>Мероприятие 16</item>
+    </string-array>
+</resources>
