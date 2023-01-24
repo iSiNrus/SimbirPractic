@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/light_grey"
     android:layout_margin="8dp">
 
@@ -17,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginVertical="12dp"
         android:layout_marginHorizontal="24dp"
-        />
+        android:contentDescription="@string/category" />
     <TextView
         android:id="@+id/tv_cat_item_title"
         android:layout_width="0dp"
@@ -31,7 +32,7 @@
         android:textColor="@color/base_green"
         android:fontFamily="sans-serif-medium"
         android:textSize="16sp"
-        android:text="Children"
+        tools:text="Children"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

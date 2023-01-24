@@ -2,17 +2,14 @@ package ru.barsik.simbirpractic.fragments.profile
 
 import android.app.Service
 import android.content.Context
-import android.database.DataSetObserver
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
-import android.widget.ListAdapter
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import ru.barsik.simbirpractic.R
 
 class AlarmDialogAdapter(

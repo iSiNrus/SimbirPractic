@@ -39,4 +39,13 @@ Nisl vel pretium lectus quam id leo in vitae. Netus et malesuada fames ac turpis
     <string name="nav_profile">Профиль</string>
     <string name="arrow_right">arrow_right</string>
     <string name="search_info_placeholder">Ключевые слова: мастер-класс, помощь\nРезультаты поиска: 109 мероприятий</string>
+    <string name="dialog_item_icon">dialog_item_icon</string>
+    <string name="category">category</string>
+    <string name="back_description">Назад</string>
+    <string name="change_camera_description">Менять камеру</string>
+    <string name="btn_take_photo">Сделать фото</string>
+    <string name="choose_category">Выберите категорию помощи</string>
+    <string name="take_photo_dialog">Выбрать фото</string>
+    <string name="make_photo_dialog">Сделать снимок</string>
+    <string name="delete">Удалить</string>
 </resources>

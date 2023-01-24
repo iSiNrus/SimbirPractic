@@ -18,10 +18,9 @@ import ru.barsik.simbirpractic.databinding.FragmentProfileBinding
 class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
-    private val TAG = "ProfileFragment"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setFragmentResultListener("photo") { requestKey, bundle ->
+        setFragmentResultListener("photo") { _, bundle ->
             parentFragmentManager.commit {
                 replace(R.id.fragment_container, ProfileFragment())
                 (requireActivity() as MainActivity).showNavigation()

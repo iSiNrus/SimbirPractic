@@ -28,7 +28,7 @@ import java.util.concurrent.Executors
 
 class CameraFragment : Fragment() {
 
-    private val TAG = "CameraFragment"
+    private val TAG = "_CameraFragment"
 
     private lateinit var binding: FragmentCameraBinding
     private lateinit var ctx : Context
@@ -120,10 +120,10 @@ class CameraFragment : Fragment() {
                     val proj = arrayOf(MediaStore.Images.Media.DATA)
                     val loader = CursorLoader(ctx, output.savedUri!!, proj, null, null, null)
                     val cursor: Cursor = loader.loadInBackground()!!
-                    val column_index: Int =
+                    val columnIndex: Int =
                         cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
                     cursor.moveToFirst()
-                    val result: String = cursor.getString(column_index)
+                    val result: String = cursor.getString(columnIndex)
                     cursor.close()
                     finishFragment(result)
                 }
