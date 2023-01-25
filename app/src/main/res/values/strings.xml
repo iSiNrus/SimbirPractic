@@ -48,4 +48,8 @@ Nisl vel pretium lectus quam id leo in vitae. Netus et malesuada fames ac turpis
     <string name="take_photo_dialog">Выбрать фото</string>
     <string name="make_photo_dialog">Сделать снимок</string>
     <string name="delete">Удалить</string>
+    <string name="search_tip1">Напишите в строке поиска название\n мероприятия или ключевые слова.</string>
+    <string name="search_tip2">Например, мастер-класс, помощь</string>
+    <string name="search_icon">search_icon</string>
+    <string name="search_title">Поиск</string>
 </resources>
