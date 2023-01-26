@@ -1,12 +1,16 @@
 package ru.barsik.simbirpractic.fragments.profile
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.setFragmentResultListener
@@ -51,8 +55,11 @@ class ProfileFragment : Fragment() {
         binding.ivAvatar.setOnClickListener {
             val dialog = ProfileAvatarDialog { _, which ->
                 when (which) {
-                    0 -> Toast.makeText(requireContext(), "Выбрать фото...", Toast.LENGTH_SHORT)
-                        .show()
+                    0 -> {
+                        val intent = Intent(Intent.ACTION_PICK)
+                        intent.type = "image/*"
+                        resultLauncher.launch(intent)
+                    }
                     1 -> parentFragmentManager.commit {
                         replace(R.id.fragment_container, CameraFragment())
                         (requireActivity() as MainActivity).hideNavigation()
@@ -66,7 +73,20 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+    { result ->
+        if(result.resultCode == RESULT_OK){
+            val imageUri : Uri = result.data?.data ?: return@registerForActivityResult
+            val imageStream = requireActivity().contentResolver.openInputStream(imageUri)
+            val selectedImage = BitmapFactory.decodeStream(imageStream)
+            /* content://media/external_primary/images/media/1000000831 */
+            binding.ivAvatar.setImageBitmap(selectedImage)
+        }
+        else
+            Toast.makeText(requireContext(), "FAILED", Toast.LENGTH_SHORT).show()
+    }
+
     companion object {
-        private var AVATAR_BITMAP : Bitmap? = null
+        private var AVATAR_BITMAP: Bitmap? = null
     }
 }
