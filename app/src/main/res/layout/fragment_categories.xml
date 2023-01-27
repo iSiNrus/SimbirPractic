@@ -12,10 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/base_green"
+        style="@style/Theme.SimbirPractic.Toolbar"
         app:layout_constraintTop_toTopOf="parent"
         app:title="Помочь"
-        app:titleCentered="true"
-        app:titleTextColor="@color/white" />
+        />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

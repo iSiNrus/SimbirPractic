@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import ru.barsik.simbirpractic.databinding.ActivityMainBinding
 import ru.barsik.simbirpractic.fragments.CategoriesFragment
+import ru.barsik.simbirpractic.fragments.news.NewsFragment
 import ru.barsik.simbirpractic.fragments.profile.ProfileFragment
 import ru.barsik.simbirpractic.fragments.search.SearchFragment
 
@@ -46,6 +47,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navig_search -> {
                     switchFragment(SearchFragment())
+                    true
+                }
+                R.id.navig_news -> {
+                    switchFragment(NewsFragment())
                     true
                 }
                 else -> false
