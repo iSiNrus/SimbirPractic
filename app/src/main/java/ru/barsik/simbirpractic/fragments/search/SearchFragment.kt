@@ -15,6 +15,9 @@ class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
     private lateinit var searchView: SearchView
+    /*
+    * TODO Переделать устаревший метод
+    * */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         requireActivity().menuInflater.inflate(R.menu.menu_top_search_appbar, menu)
         val myActionMenuItem = menu.findItem(R.id.search)

@@ -70,9 +70,6 @@ class CameraFragment : Fragment() {
         return binding.root
     }
 
-    /**
-     * TODO Надо принимать путь до файла и его передеавать как результат
-     * */
     private fun finishFragment(path: String?) {
         val bundleRes = if (path != null) Bundle().also { it.putString(BUNDLE_PATH, path) }
         else Bundle.EMPTY

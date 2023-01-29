@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categories_names">
+        <item>Дети</item>
+        <item>Взрослые</item>
+        <item>Пожилые</item>
+        <item>Животные</item>
+        <item>Мероприятия</item>
+    </string-array>
+</resources>

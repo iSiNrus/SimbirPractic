@@ -59,6 +59,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+        onBackPressedDispatcher.onBackPressed()
+        showNavigation()
+    }
     private fun switchFragment(fm: Fragment) {
         supportFragmentManager.commit {
             replace(R.id.fragment_container, fm)

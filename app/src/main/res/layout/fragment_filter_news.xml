@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_grey"
     android:orientation="vertical"
-    tools:context=".fragments.news.NewsFragment">
+    tools:context=".fragments.news.FilterNewsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -17,30 +18,23 @@
             style="@style/Theme.SimbirPractic.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:menu="@menu/menu_top_news_appbar"
-            app:title="Новости" />
+            app:menu="@menu/menu_top_filter_appbar"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Фильтр" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:lineHeight="20sp"
+        android:padding="20dp"
+        android:text="Категории помощи"
+        android:textSize="14sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include layout="@layout/news_item_card" />
-
-            <include layout="@layout/news_item_card" />
-
-            <include layout="@layout/news_item_card" />
-
-            <include layout="@layout/news_item_card" />
-
-            <include layout="@layout/news_item_card" />
-
-            <include layout="@layout/news_item_card" />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_categories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white" />
 </LinearLayout>
