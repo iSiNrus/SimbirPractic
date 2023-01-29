@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            app:layout_constraintHeight_max="300dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -24,8 +25,8 @@
             <ImageView
                 android:id="@+id/news_image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="center"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
                 android:src="@drawable/news_image_1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +36,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="center"
+                android:scaleType="fitXY"
                 android:src="@drawable/fade_mask" />
         </FrameLayout>
 
@@ -61,10 +62,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_news_title"
-            app:layout_constraintBottom_toTopOf="@id/news_description"/>
+            app:layout_constraintBottom_toTopOf="@id/tv_news_description"/>
 
         <TextView
-            android:id="@+id/news_description"
+            android:id="@+id/tv_news_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="26dp"
@@ -96,6 +97,7 @@
                 android:layout_marginHorizontal="10dp"
                 />
             <TextView
+                android:id="@+id/tv_news_remain_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
