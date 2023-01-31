@@ -74,6 +74,8 @@
             android:lineHeight="20sp"
             android:text="Дубовская школа-интернат для детей с ограниченными возможностями здоровья стала первой в области …"
             android:textAlignment="center"
+            android:maxLines="3"
+            android:ellipsize="end"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
