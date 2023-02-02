@@ -9,36 +9,49 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.setFragmentResultListener
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.barsik.simbirpractic.MainActivity
 import ru.barsik.simbirpractic.R
+import ru.barsik.simbirpractic.dao.CategoryDAO
 import ru.barsik.simbirpractic.dao.EventDAO
 import ru.barsik.simbirpractic.databinding.FragmentNewsBinding
+import ru.barsik.simbirpractic.entity.Category
 import ru.barsik.simbirpractic.entity.Event
+import ru.barsik.simbirpractic.util.NewsDiffUtil
 
 class NewsFragment : Fragment() {
 
     private val TAG = "NewsFragment"
     private lateinit var binding: FragmentNewsBinding
     private lateinit var eventList: List<Event>
+    private lateinit var categoriesList: List<Category>
+    private lateinit var adapter: NewsEventsAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         eventList = EventDAO(requireContext()).getEvents()
+        categoriesList = CategoryDAO(requireContext()).getCategories()
+        adapter = NewsEventsAdapter(eventList)
+
         setFragmentResultListener("filter") { _, bundle ->
-            parentFragmentManager.commit {
-                replace(R.id.fragment_container, NewsFragment())
-                (requireActivity() as MainActivity).showNavigation()
+
+            with(requireActivity() as MainActivity) {
+                this.switchFragment(NewsFragment())
+                this.showNavigation()
             }
             if (bundle.isEmpty) Log.d(TAG, "onCreateView: bundle is empty")
             else {
-                val categoryList =
-                    bundle.getStringArrayList(FilterNewsFragment.BUNDLE_CATEGORIES_LIST)
-                val switchesArray = bundle.getBooleanArray(FilterNewsFragment.BUNDLE_SWITCHES_LIST)
-                categoryList?.forEachIndexed { index, s ->
-                    Log.d(TAG, "onCreateView: $index $s - ${switchesArray?.get(index)}")
+                val categoriesIdList =
+                    bundle.getIntegerArrayList(FilterNewsFragment.BUNDLE_CATEGORIES_ID_LIST)
+
+                if (categoriesIdList != null) {
+                    eventList = eventList.filter { event ->
+                        event.categories.intersect(categoriesIdList).isNotEmpty()
+                    }
                 }
             }
+            (binding.rvNews.adapter as NewsEventsAdapter).setData(eventList)
         }
     }
 
@@ -47,6 +60,8 @@ class NewsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentNewsBinding.inflate(layoutInflater)
+        binding.rvNews.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvNews.adapter = adapter
         return binding.root
     }
 
@@ -65,11 +80,9 @@ class NewsFragment : Fragment() {
             true
         }
 
-        binding.rvNews.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvNews.adapter = NewsEventsAdapter(eventList)
     }
 
-    private inner class NewsEventsAdapter(private val items: List<Event>) :
+    private inner class NewsEventsAdapter(private var itemList: List<Event>) :
         RecyclerView.Adapter<NewsEventsAdapter.EventViewHolder>() {
 
         private inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -85,18 +98,25 @@ class NewsFragment : Fragment() {
             return EventViewHolder(view)
         }
 
-        override fun getItemCount() = items.size
+        override fun getItemCount() = itemList.size
         override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-            holder.title.text = items[position].title
-            holder.description.text = items[position].description
+            holder.title.text = itemList[position].title
+            holder.description.text = itemList[position].description
             holder.remainTime.text = "Not supported yet"
             holder.image.setImageBitmap(
                 BitmapFactory.decodeStream(
                     requireContext().resources.assets.open(
-                        items[position].title_img_path
+                        itemList[position].title_img_path
                     )
                 )
             )
+        }
+
+        fun setData(newItemList: List<Event>) {
+            val diffUtil = NewsDiffUtil(itemList, newItemList)
+            val diffResult = DiffUtil.calculateDiff(diffUtil)
+            itemList = newItemList
+            diffResult.dispatchUpdatesTo(this)
         }
 
     }

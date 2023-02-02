@@ -12,5 +12,5 @@ data class Event(
     val description: String,
     val org_site: String,
     val title_img_path: String,
-    val category: List<Int>
+    val categories: List<Int>
 )

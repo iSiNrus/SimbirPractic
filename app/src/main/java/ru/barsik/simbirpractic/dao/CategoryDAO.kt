@@ -7,10 +7,10 @@ import ru.barsik.simbirpractic.entity.Category
 
 class CategoryDAO(private val ctx: Context) {
 
-    private var categories = ArrayList<Category>()
+    private var categories : ArrayList<Category>? = null
 
     fun getCategories(): List<Category> {
-        if (categories.isEmpty()) {
+        if (categories==null) {
 
             val jsonString = ctx.assets.open("categories.json")
                 .bufferedReader().use { it.readText() }
@@ -19,6 +19,13 @@ class CategoryDAO(private val ctx: Context) {
             val catKeyType = object : TypeToken<List<Category>>() {}.type
             categories = gson.fromJson(jsonString, catKeyType)
         }
-        return categories
+        return categories!!
+    }
+
+    fun getCategoryByTitle(mTitle:String): Category{
+        if(categories==null) getCategories()
+        return categories?.find {it ->
+            it.title==mTitle
+        } ?: Category(3,"dsf")
     }
 }

@@ -14,24 +14,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import ru.barsik.simbirpractic.R
+import ru.barsik.simbirpractic.dao.CategoryDAO
 import ru.barsik.simbirpractic.databinding.FragmentFilterNewsBinding
+import ru.barsik.simbirpractic.entity.Category
 
 class FilterNewsFragment : Fragment() {
 
     private lateinit var binding: FragmentFilterNewsBinding
-    private val categoryItemsList = ArrayList<Pair<String, Boolean>>()
+    private var categoryItemsList = ArrayList<Category>()
+    private var resultList = ArrayList<Category>()
+    private lateinit var categoryDAO: CategoryDAO
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFilterNewsBinding.inflate(layoutInflater)
+        categoryDAO = CategoryDAO(requireContext())
+        categoryItemsList = ArrayList(categoryDAO.getCategories())
+        resultList = ArrayList(categoryDAO.getCategories())
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        resources.getStringArray(R.array.categories_names).map {
-            categoryItemsList.add(Pair(it, true))
-        }
         binding.rvCategories.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCategories.adapter = FilterAdapter(categoryItemsList)
         binding.topAppBar.setNavigationOnClickListener {
@@ -41,15 +45,13 @@ class FilterNewsFragment : Fragment() {
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.submit_filter -> {
-                    val catTitles = ArrayList<String>()
-                    val catSwitchers = ArrayList<Boolean>()
-                    categoryItemsList.map {
-                        catTitles.add(it.first)
-                        catSwitchers.add(it.second)
-                    }
-                    setFragmentResult("filter", Bundle().also {
-                        it.putStringArrayList(BUNDLE_CATEGORIES_LIST, catTitles)
-                        it.putBooleanArray(BUNDLE_SWITCHES_LIST, catSwitchers.toBooleanArray())
+                    setFragmentResult("filter", Bundle().also { bundle ->
+                        bundle.putIntegerArrayList(
+                            BUNDLE_CATEGORIES_ID_LIST,
+                            ArrayList(resultList.map { cat ->
+                                cat.id
+                            })
+                        )
                     })
                     requireActivity().onBackPressedDispatcher.onBackPressed()
                 }
@@ -58,7 +60,7 @@ class FilterNewsFragment : Fragment() {
         }
     }
 
-    private inner class FilterAdapter(private val categoryItemsList: List<Pair<String, Boolean>>) :
+    private inner class FilterAdapter(private val categoryItemsList: List<Category>) :
         RecyclerView.Adapter<FilterAdapter.CategoryFilterViewHolder>() {
 
         private inner class CategoryFilterViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -79,18 +81,17 @@ class FilterNewsFragment : Fragment() {
         override fun getItemCount() = categoryItemsList.size
 
         override fun onBindViewHolder(holder: CategoryFilterViewHolder, position: Int) {
-            holder.title.text = categoryItemsList[position].first
-            holder.switch.isChecked = categoryItemsList[position].second
+            holder.title.text = categoryItemsList[position].title
             holder.switch.setOnClickListener {
-                this@FilterNewsFragment.categoryItemsList[position] =
-                    Pair(categoryItemsList[position].first, (it as SwitchCompat).isChecked)
+                val cat = categoryDAO.getCategoryByTitle(holder.title.text.toString())
+                if (holder.switch.isChecked) resultList.add(cat)
+                else resultList.remove(cat)
             }
         }
 
     }
 
     companion object {
-        const val BUNDLE_CATEGORIES_LIST = "CATEGORIES"
-        const val BUNDLE_SWITCHES_LIST = "SWITCHERS"
+        const val BUNDLE_CATEGORIES_ID_LIST = "CATEGORIES"
     }
 }
