@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         } else {
-           switchFragment(CategoriesFragment())
+           switchFragment(CategoriesFragment(), addBackStack = false, showBottomNavigation = true)
         }
 
         binding.bottomNavigation.selectedItemId = R.id.navig_help
@@ -38,19 +38,19 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navig_help -> {
-                    switchFragment(CategoriesFragment())
+                    switchFragment(CategoriesFragment(), addBackStack = false, showBottomNavigation = true)
                     true
                 }
                 R.id.navig_profile -> {
-                    switchFragment(ProfileFragment())
+                    switchFragment(ProfileFragment(), addBackStack = false, showBottomNavigation = true)
                     true
                 }
                 R.id.navig_search -> {
-                    switchFragment(SearchFragment())
+                    switchFragment(SearchFragment(), addBackStack = false, showBottomNavigation = true)
                     true
                 }
                 R.id.navig_news -> {
-                    switchFragment(NewsFragment())
+                    switchFragment(NewsFragment(), addBackStack = false, showBottomNavigation = true)
                     true
                 }
                 else -> false
@@ -63,9 +63,18 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.onBackPressed()
         showNavigation()
     }
-    fun switchFragment(fm: Fragment) {
+    fun switchFragment(fm: Fragment, addBackStack: Boolean,  showBottomNavigation: Boolean) {
         supportFragmentManager.commit {
             replace(R.id.fragment_container, fm)
+            if(addBackStack) addToBackStack(null)
+            if(showBottomNavigation) showNavigation()
+            else hideNavigation()
+        }
+    }
+
+    fun addFragment(fm: Fragment){
+        supportFragmentManager.commit {
+            add(R.id.fragment_container, fm)
         }
     }
 

@@ -19,6 +19,7 @@ import ru.barsik.simbirpractic.dao.EventDAO
 import ru.barsik.simbirpractic.databinding.FragmentNewsBinding
 import ru.barsik.simbirpractic.entity.Category
 import ru.barsik.simbirpractic.entity.Event
+import ru.barsik.simbirpractic.fragments.EventInfoFragment
 import ru.barsik.simbirpractic.util.NewsDiffUtil
 
 class NewsFragment : Fragment() {
@@ -37,8 +38,7 @@ class NewsFragment : Fragment() {
         setFragmentResultListener("filter") { _, bundle ->
 
             with(requireActivity() as MainActivity) {
-                this.switchFragment(NewsFragment())
-                this.showNavigation()
+                this.switchFragment(NewsFragment(), addBackStack = false, showBottomNavigation = true)
             }
             if (bundle.isEmpty) Log.d(TAG, "onCreateView: bundle is empty")
             else {
@@ -110,6 +110,15 @@ class NewsFragment : Fragment() {
                     )
                 )
             )
+
+            holder.itemView.setOnClickListener {
+                (requireActivity() as MainActivity)
+                    .switchFragment(
+                        EventInfoFragment(itemList[position]),
+                        addBackStack = true,
+                        showBottomNavigation = false
+                    )
+            }
         }
 
         fun setData(newItemList: List<Event>) {
