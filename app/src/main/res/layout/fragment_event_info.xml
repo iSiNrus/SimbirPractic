@@ -54,7 +54,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_start2"
                 android:layout_width="wrap_content"
@@ -199,9 +200,12 @@
             <ImageView
                 android:id="@+id/iv_imgs_1"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
+                android:scaleType="fitXY"
                 android:src="@drawable/news_image_1"
-                app:layout_constraintHorizontal_weight="7"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintHorizontal_weight="6"
                 app:layout_constraintTop_toBottomOf="@id/tv_mail_to"
                 app:layout_constraintStart_toStartOf="@id/guideline_start2"
                 app:layout_constraintEnd_toStartOf="@id/iv_imgs_2"
@@ -212,29 +216,113 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:src="@drawable/news_image_1"
-                android:cropToPadding=""
+                android:scaleType="fitXY"
+                android:layout_marginBottom="10dp"
+                app:layout_wrapBehaviorInParent="horizontal_only"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:layout_constraintVertical_weight="1"
                 app:layout_constraintHorizontal_weight="3"
                 app:layout_constraintBottom_toTopOf="@id/iv_imgs_3"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end2"
                 app:layout_constraintStart_toEndOf="@id/iv_imgs_1"
-                app:layout_constraintTop_toBottomOf="@id/tv_mail_to"
+                app:layout_constraintTop_toTopOf="@id/iv_imgs_1"
                 />
             <ImageView
                 android:id="@+id/iv_imgs_3"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:scaleType="fitXY"
+                app:layout_wrapBehaviorInParent="horizontal_only"
                 app:layout_constraintVertical_chainStyle="packed"
                 android:src="@drawable/news_image_1"
                 app:layout_constraintVertical_weight="1"
                 app:layout_constraintHorizontal_weight="3"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end2"
-                app:layout_constraintStart_toEndOf="@id/iv_imgs_1"
+                app:layout_constraintStart_toStartOf="@id/iv_imgs_2"
                 app:layout_constraintTop_toBottomOf="@id/iv_imgs_2"
                 app:layout_constraintBottom_toBottomOf="@id/iv_imgs_1"
                 />
 
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintVertical_weight="1"
+                android:layout_marginTop="20dp"
+
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="14sp"
+                android:lineHeight="20sp"
+                android:text="Участники и болельщики смогли весело и активно провести время на «Петербургском благотворительном марафоне» и при этом финансово поучаствовать в помощи детям.\nПри этом финансово поучаствовать в помощи детям. При этом финансово поучаствовать в помощи детям."
+                app:layout_constraintTop_toBottomOf="@id/iv_imgs_1"
+                app:layout_constraintStart_toStartOf="@id/guideline_start2"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end2"
+                />
+
+            <TextView
+                android:id="@+id/tv_site_link"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintVertical_weight="1"
+                android:layout_marginTop="20dp"
+
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="14sp"
+                android:lineHeight="20sp"
+                android:autoLink="web"
+                android:text="Перейти на сайт организации"
+                app:layout_constraintTop_toBottomOf="@id/tv_description"
+                app:layout_constraintStart_toStartOf="@id/guideline_start2"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end2"
+                />
+
+            <LinearLayout
+                android:id="@+id/ll_subsribers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/light_grey"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                android:paddingVertical="20dp"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toBottomOf="@id/tv_site_link"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/avatar_3"
+                    />
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/avatar_3"
+                    />
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/avatar_3"
+                    />
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/avatar_3"
+                    />
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/avatar_3"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="14sp"
+                    android:text="+102"/>
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
