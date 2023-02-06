@@ -11,7 +11,7 @@
         android:icon="@drawable/ic_search_24"
         android:title="@string/nav_search"/>
     <item
-        android:id="@+id/page_2"
+        android:id="@+id/navig_help"
         android:enabled="true"
         android:icon="@drawable/ic_favorite_24"
         android:title="@string/nav_help"/>

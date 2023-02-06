@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="non_com_orgs">
+        <item>Общественная палата РФ</item>
+        <item>Агентство социальной информации</item>
+        <item>Гринпис России</item>
+        <item>Фонд президентских грантов</item>
+        <item>Благотворительный фонд Елены и Геннадия Тимченко</item>
+        <item>Благотворительный фонд Владимира Потанина</item>
+        <item>Подари жизнь</item>
+        <item>Общественное телевидение России</item>
+        <item>Старость в радость</item>
+        <item>Волонтеры в помощь детям-сиротам</item>
+        <item>Наше будущее</item>
+        <item>Гарант</item>
+        <item>Ночлежка</item>
+        <item>Форум Доноров</item>
+        <item>Теплица социальных технологий</item>
+        <item>Линия жизни</item>
+    </string-array>
+</resources>

@@ -10,7 +10,17 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/dark_green</item>
         <!-- Customize your theme here. -->
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabTextColor">@color/pale_grey</item>
+        <item name="tabIndicatorColor">@color/macaroni_and_cheese</item>
+    </style>
+
+    <style name="Theme.SimbirPractic.Toolbar" parent="@style/Widget.MaterialComponents.Toolbar.Primary">
+        <item name="fontFamily">@font/officina_sans_extra_bold</item>
+        <item name="titleTextColor">@color/white</item>
+        <item name="titleCentered">true</item>
+        <item name="android:windowTitleSize">21sp</item>
     </style>
 </resources>
