@@ -37,9 +37,6 @@ class NewsFragment : Fragment() {
 
         setFragmentResultListener("filter") { _, bundle ->
 
-            with(requireActivity() as MainActivity) {
-                this.switchFragment(NewsFragment(), addBackStack = false, showBottomNavigation = true)
-            }
             if (bundle.isEmpty) Log.d(TAG, "onCreateView: bundle is empty")
             else {
                 val categoriesIdList =

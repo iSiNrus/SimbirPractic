@@ -1,56 +1,76 @@
 package ru.barsik.simbirpractic.fragments
 
-import android.database.DataSetObserver
-import android.graphics.drawable.GradientDrawable.Orientation
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.ImageView
-import android.widget.ListAdapter
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import ru.barsik.simbirpractic.R
+import ru.barsik.simbirpractic.dao.CategoryDAO
 import ru.barsik.simbirpractic.databinding.FragmentCategoriesBinding
+import ru.barsik.simbirpractic.entity.Category
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
-class CategoriesFragment : Fragment() {
+class CategoriesFragment() : Fragment() {
 
+    private val TAG = "CategoriesFragment"
     private lateinit var binding: FragmentCategoriesBinding
+
+    private val task = Runnable {
+        TimeUnit.SECONDS.sleep(2)
+        val categoryDAO = CategoryDAO(requireContext())
+        categories = categoryDAO.getCategories() as ArrayList
+        handler.sendMessage(Message())
+    }
+
+    private val handler = Handler(Looper.getMainLooper()) {
+        initRecyclerView()
+        return@Handler true
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentCategoriesBinding.inflate(layoutInflater)
+        super.onCreateView(inflater, container, savedInstanceState)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val categList = arrayListOf<Pair<String, Int>>(
-            Pair("Дети", R.drawable.children),
-            Pair("Взрослые", R.drawable.adults),
-            Pair("Пожилые", R.drawable.elderly),
-            Pair("Животные", R.drawable.animals),
-            Pair("Мероприятия", R.drawable.events)
-        )
-        binding.categoryRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.categoryRecyclerview.addItemDecoration(object : ItemDecoration(){
-
-        })
-        binding.categoryRecyclerview.adapter = CategoryItemAdapter(categList)
+        if (categories == null) {
+            Log.d(TAG, "onViewCreated: old List NOT Detected")
+            val executor = Executors.newFixedThreadPool(1)
+            executor.submit(task)
+        } else
+            initRecyclerView()
     }
 
-    private inner class CategoryItemAdapter(private val categoryList: List<Pair<String, Int>>) :
+    private fun initRecyclerView() {
+        val categList = categories?.map { Pair(it.title, it.iconPath) }?.toList() ?: ArrayList()
+        binding.categoryRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.categoryRecyclerview.adapter = CategoryItemAdapter(categList)
+        binding.progressBarCategories.visibility = View.GONE
+        binding.categoryRecyclerview.visibility = View.VISIBLE
+    }
+
+    private inner class CategoryItemAdapter(private val categoryList: List<Pair<String, String>>) :
         RecyclerView.Adapter<CategoryItemAdapter.CategoryViewHolder>() {
 
         inner class CategoryViewHolder(itemView: View) : ViewHolder(itemView) {
-            val image : ImageView = itemView.findViewById(R.id.iv_cat_item)
-            val title : TextView = itemView.findViewById(R.id.tv_cat_item_title)
+            val image: ImageView = itemView.findViewById(R.id.iv_cat_item)
+            val title: TextView = itemView.findViewById(R.id.tv_cat_item_title)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
@@ -63,8 +83,18 @@ class CategoriesFragment : Fragment() {
 
         override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
             holder.title.text = categoryList[position].first
-            holder.image.setImageResource(categoryList[position].second)
+            holder.image.setImageBitmap(
+                BitmapFactory.decodeStream(
+                    resources.assets.open(
+                        categoryList[position].second
+                    )
+                )
+            )
         }
 
+    }
+
+    companion object {
+        var categories: ArrayList<Category>? = null
     }
 }
