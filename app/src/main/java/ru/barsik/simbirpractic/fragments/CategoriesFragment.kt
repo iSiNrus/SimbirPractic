@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import ru.barsik.simbirpractic.MainActivity
 import ru.barsik.simbirpractic.R
 import ru.barsik.simbirpractic.dao.CategoryDAO
 import ru.barsik.simbirpractic.databinding.FragmentCategoriesBinding
@@ -27,7 +26,7 @@ class CategoriesFragment() : Fragment() {
 
     private val TAG = "CategoriesFragment"
     private lateinit var binding: FragmentCategoriesBinding
-    private var categories: ArrayList<Category>? = null
+
     private val task = Runnable {
         TimeUnit.SECONDS.sleep(2)
         val categoryDAO = CategoryDAO(requireContext())
@@ -36,7 +35,6 @@ class CategoriesFragment() : Fragment() {
     }
 
     private val handler = Handler(Looper.getMainLooper()) {
-        (requireActivity() as MainActivity).setCategories(categories?: ArrayList())
         initRecyclerView()
         return@Handler true
     }
@@ -50,15 +48,13 @@ class CategoriesFragment() : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        categories = (requireActivity() as MainActivity).getCategories()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (categories == null) {
             Log.d(TAG, "onViewCreated: old List NOT Detected")
             val executor = Executors.newFixedThreadPool(1)
             executor.submit(task)
         } else
             initRecyclerView()
-        super.onResume()
     }
 
     private fun initRecyclerView() {
@@ -96,5 +92,9 @@ class CategoriesFragment() : Fragment() {
             )
         }
 
+    }
+
+    companion object {
+        var categories: ArrayList<Category>? = null
     }
 }
