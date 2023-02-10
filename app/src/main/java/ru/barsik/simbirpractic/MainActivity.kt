@@ -4,13 +4,17 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import ru.barsik.simbirpractic.databinding.ActivityMainBinding
+import ru.barsik.simbirpractic.entity.Category
 import ru.barsik.simbirpractic.fragments.CategoriesFragment
 import ru.barsik.simbirpractic.fragments.auth.AuthFragment
 import ru.barsik.simbirpractic.fragments.news.NewsFragment
@@ -19,7 +23,7 @@ import ru.barsik.simbirpractic.fragments.search.SearchFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
+    private var categories: ArrayList<Category>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -60,6 +64,32 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun getCategories() = categories
+
+    fun setCategories(categories: ArrayList<Category>) {
+        this.categories = categories
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(CATEGORIES_LIST, Gson().toJson(categories))
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        val jsonStr = savedInstanceState?.getString(CATEGORIES_LIST)
+        if(jsonStr!=null)
+            categories = Gson().fromJson(jsonStr, object : TypeToken<List<Category>>() {}.type)
+        super.onRestoreInstanceState(savedInstanceState)
+    }
+    override fun onRestoreInstanceState(
+        savedInstanceState: Bundle?,
+        persistentState: PersistableBundle?
+    ) {
+        val jsonStr = savedInstanceState?.getString(CATEGORIES_LIST)
+        if(jsonStr!=null)
+            categories = Gson().fromJson(jsonStr, object : TypeToken<List<Category>>() {}.type)
+        super.onRestoreInstanceState(savedInstanceState, persistentState)
+    }
     override fun onBackPressed() {
         onBackPressedDispatcher.onBackPressed()
         showNavigation()
@@ -126,5 +156,7 @@ class MainActivity : AppCompatActivity() {
             Pair("Auth", AuthFragment()),
             Pair("Categories", CategoriesFragment())
         )
+
+        private const val CATEGORIES_LIST = "CATEGORIES_LIST"
     }
 }
