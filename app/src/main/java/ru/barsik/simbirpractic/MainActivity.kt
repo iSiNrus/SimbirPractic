@@ -1,10 +1,10 @@
 package ru.barsik.simbirpractic
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -15,7 +15,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ru.barsik.simbirpractic.databinding.ActivityMainBinding
 import ru.barsik.simbirpractic.entity.Category
+import ru.barsik.simbirpractic.entity.Event
 import ru.barsik.simbirpractic.fragments.CategoriesFragment
+import ru.barsik.simbirpractic.fragments.news.LoadEventsService
 import ru.barsik.simbirpractic.fragments.news.NewsFragment
 import ru.barsik.simbirpractic.fragments.profile.ProfileFragment
 import ru.barsik.simbirpractic.fragments.search.SearchFragment
@@ -23,6 +25,7 @@ import ru.barsik.simbirpractic.fragments.search.SearchFragment
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var categories: ArrayList<Category>? = null
+    private var events: ArrayList<Event>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -34,27 +37,73 @@ class MainActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         } else {
-           switchFragment(CategoriesFragment(), addBackStack = false, showBottomNavigation = true)
+            if (savedInstanceState?.getInt(OPENED_TAB) == null)
+                switchFragment(
+                    CategoriesFragment(),
+                    addBackStack = false,
+                    showBottomNavigation = true
+                )
+            else
+                when (savedInstanceState.getInt(OPENED_TAB)) {
+                    R.id.navig_help -> switchFragment(
+                        CategoriesFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
+                    R.id.navig_news -> switchFragment(
+                        NewsFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
+                    R.id.navig_search -> switchFragment(
+                        SearchFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
+                    R.id.navig_profile -> switchFragment(
+                        ProfileFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
+//                    R.id.navig_history -> switchFragment(HitoryFragment, addBackStack = false, showBottomNavigation = true)
+                }
         }
 
-        binding.bottomNavigation.selectedItemId = R.id.navig_help
+        binding.bottomNavigation.selectedItemId =
+            savedInstanceState?.getInt(OPENED_TAB) ?: R.id.navig_help
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navig_help -> {
-                    switchFragment(CategoriesFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(
+                        CategoriesFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
                     true
                 }
                 R.id.navig_profile -> {
-                    switchFragment(ProfileFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(
+                        ProfileFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
                     true
                 }
                 R.id.navig_search -> {
-                    switchFragment(SearchFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(
+                        SearchFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
                     true
                 }
                 R.id.navig_news -> {
-                    switchFragment(NewsFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(
+                        NewsFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
                     true
                 }
                 else -> false
@@ -69,40 +118,44 @@ class MainActivity : AppCompatActivity() {
         this.categories = categories
     }
 
+    fun getEvents() = events
+
+    fun setEvents(events: ArrayList<Event>) {
+        this.events = events
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString(CATEGORIES_LIST, Gson().toJson(categories))
+        outState.putString(EVENT_LIST, Gson().toJson(events))
+        outState.putInt(OPENED_TAB, binding.bottomNavigation.selectedItemId)
         super.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        val jsonStr = savedInstanceState?.getString(CATEGORIES_LIST)
-        if(jsonStr!=null)
-            categories = Gson().fromJson(jsonStr, object : TypeToken<List<Category>>() {}.type)
+        val catJsonStr = savedInstanceState?.getString(CATEGORIES_LIST)
+        val eventsJsonStr = savedInstanceState?.getString(EVENT_LIST)
+        if (eventsJsonStr != null)
+            events = Gson().fromJson(eventsJsonStr, object : TypeToken<List<Event>>() {}.type)
+        if (catJsonStr != null)
+            categories = Gson().fromJson(catJsonStr, object : TypeToken<List<Category>>() {}.type)
         super.onRestoreInstanceState(savedInstanceState)
     }
-    override fun onRestoreInstanceState(
-        savedInstanceState: Bundle?,
-        persistentState: PersistableBundle?
-    ) {
-        val jsonStr = savedInstanceState?.getString(CATEGORIES_LIST)
-        if(jsonStr!=null)
-            categories = Gson().fromJson(jsonStr, object : TypeToken<List<Category>>() {}.type)
-        super.onRestoreInstanceState(savedInstanceState, persistentState)
-    }
+
     override fun onBackPressed() {
         onBackPressedDispatcher.onBackPressed()
         showNavigation()
     }
-    fun switchFragment(fm: Fragment, addBackStack: Boolean,  showBottomNavigation: Boolean) {
+
+    fun switchFragment(fm: Fragment, addBackStack: Boolean, showBottomNavigation: Boolean) {
         supportFragmentManager.commit {
             replace(R.id.fragment_container, fm)
-            if(addBackStack) addToBackStack(null)
-            if(showBottomNavigation) showNavigation()
+            if (addBackStack) addToBackStack(null)
+            if (showBottomNavigation) showNavigation()
             else hideNavigation()
         }
     }
 
-    fun addFragment(fm: Fragment){
+    fun addFragment(fm: Fragment) {
         supportFragmentManager.commit {
             add(R.id.fragment_container, fm)
         }
@@ -138,6 +191,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun startServiceForEvents() {
+        this.startService(Intent(this, LoadEventsService::class.java))
+    }
+
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS =
@@ -150,5 +207,7 @@ class MainActivity : AppCompatActivity() {
             }.toTypedArray()
 
         private const val CATEGORIES_LIST = "CATEGORIES_LIST"
+        private const val EVENT_LIST = "EVENT_LIST"
+        private const val OPENED_TAB = "OPENED_TAB"
     }
 }
