@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import ru.barsik.simbirpractic.databinding.ActivityMainBinding
 import ru.barsik.simbirpractic.fragments.CategoriesFragment
+import ru.barsik.simbirpractic.fragments.auth.AuthFragment
 import ru.barsik.simbirpractic.fragments.news.NewsFragment
 import ru.barsik.simbirpractic.fragments.profile.ProfileFragment
 import ru.barsik.simbirpractic.fragments.search.SearchFragment
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         } else {
-           switchFragment(CategoriesFragment(), addBackStack = false, showBottomNavigation = true)
+           switchFragment(AuthFragment(), addBackStack = false, showBottomNavigation = false)
         }
 
         binding.bottomNavigation.selectedItemId = R.id.navig_help
