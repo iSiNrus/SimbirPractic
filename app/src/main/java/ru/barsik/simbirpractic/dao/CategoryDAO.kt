@@ -26,6 +26,6 @@ class CategoryDAO(private val ctx: Context) {
         if(categories==null) getCategories()
         return categories?.find {it ->
             it.title==mTitle
-        } ?: Category(3,"dsf")
+        } ?: Category(3,"dsf", "")
     }
 }

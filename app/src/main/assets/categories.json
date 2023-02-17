@@ -1,22 +1,27 @@
 [
   {
     "id": 0,
-    "title": "Дети"
+    "title": "Дети",
+    "icon_path": "cat_img/children.png"
   },
   {
     "id": 1,
-    "title": "Взрослые"
+    "title": "Взрослые",
+    "icon_path": "cat_img/adults.png"
   },
   {
     "id": 2,
-    "title": "Пожилые"
+    "title": "Пожилые",
+    "icon_path": "cat_img/elders.png"
   },
   {
     "id": 3,
-    "title": "Животные"
+    "title": "Животные",
+    "icon_path": "cat_img/animals.png"
   },
   {
     "id": 4,
-    "title": "События"
+    "title": "События",
+    "icon_path": "cat_img/events.png"
   }
 ]
