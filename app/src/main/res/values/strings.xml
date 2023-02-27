@@ -50,6 +50,8 @@ Nisl vel pretium lectus quam id leo in vitae. Netus et malesuada fames ac turpis
     <string name="delete">Удалить</string>
     <string name="search_tip1">Напишите в строке поиска название\n мероприятия или ключевые слова.</string>
     <string name="search_tip2">Например, мастер-класс, помощь</string>
+    <string name="search_tip3">Напишите в строке поиска название\n организации или ключевые слова.</string>
+    <string name="search_tip4">Например, фонд, компания</string>
     <string name="search_icon">search_icon</string>
     <string name="search_title">Поиск</string>
     <!-- TODO: Remove or change this placeholder text -->

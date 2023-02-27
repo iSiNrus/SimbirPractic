@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         } else {
-           switchFragment(AuthFragment(), addBackStack = false, showBottomNavigation = false)
+           switchFragment(SearchFragment(), addBackStack = false, showBottomNavigation = true)
         }
 
         binding.bottomNavigation.selectedItemId = R.id.navig_help
