@@ -11,8 +11,9 @@ class SearchPagerAdapter(fragment : Fragment) : FragmentStateAdapter(fragment) {
         return 2
     }
 
-    fun getActiveFragment(){
-
+    fun getFragmentByPos(pos : Int) : Fragment {
+        return if(pos==0) pageEvents
+        else pageNKO
     }
     override fun createFragment(position: Int): Fragment {
         return when (position){
