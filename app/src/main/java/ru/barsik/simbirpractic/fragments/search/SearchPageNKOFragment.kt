@@ -1,19 +1,25 @@
 package ru.barsik.simbirpractic.fragments.search
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import ru.barsik.simbirpractic.R
+import ru.barsik.simbirpractic.dao.EventDAO
 import ru.barsik.simbirpractic.databinding.FragmentSearchPageNkoBinding
 
 class SearchPageNKOFragment : Fragment(), SearchableFragment {
 
     private lateinit var binding: FragmentSearchPageNkoBinding
-
+    private var _eventDAO: EventDAO? = null
+    private val eventDAO : EventDAO
+        get() { if(_eventDAO==null) _eventDAO = EventDAO(requireContext())
+        return _eventDAO!!
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,12 +35,26 @@ class SearchPageNKOFragment : Fragment(), SearchableFragment {
             layoutManager = LinearLayoutManager(requireContext())
 //            adapter = SearchRecyclerAdapter(
 //                resources.getStringArray(R.array.non_com_orgs).also { it.shuffle() })
-            adapter = SearchRecyclerAdapter(emptyList())
+            adapter = SearchRecyclerAdapter(emptyList(), SearchRecyclerAdapter.TypeOfList.ORGS)
         }
     }
 
     override fun setSearchQuery(query: String) {
-
+        try {
+            val resList = eventDAO.getEvents().filter{ x ->
+                x.organization.contains(query, true)
+            }
+            if (resList.isEmpty()) {
+                binding.searchContent.isVisible = false
+                binding.clPlaceholder.isVisible = true
+            } else {
+                binding.searchContent.isVisible = true
+                binding.clPlaceholder.isVisible = false
+                (binding.recyclerView.adapter as SearchRecyclerAdapter).setData(resList)
+            }
+        } catch (e: Exception){
+            Log.e("TAG", "setSearchQuery: CHPOK!", )
+        }
     }
 
 }

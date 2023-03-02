@@ -11,7 +11,8 @@ import ru.barsik.simbirpractic.entity.Event
 import ru.barsik.simbirpractic.util.NewsDiffUtil
 
 class SearchRecyclerAdapter(
-    private var listItems: List<Event>
+    private var listItems: List<Event>,
+    private val type: TypeOfList
 ) :
     RecyclerView.Adapter<SearchRecyclerAdapter.SearchItemViewHolder>() {
 
@@ -28,7 +29,11 @@ class SearchRecyclerAdapter(
     override fun getItemCount() = listItems.size
 
     override fun onBindViewHolder(holder: SearchItemViewHolder, position: Int) {
-        holder.title.text = listItems[position].title
+        when(type){
+            TypeOfList.EVENTS -> holder.title.text = listItems[position].title
+            TypeOfList.ORGS -> holder.title.text = listItems[position].organization
+        }
+
     }
 
     fun setData(newItemList: List<Event>) {
@@ -36,5 +41,9 @@ class SearchRecyclerAdapter(
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         listItems = newItemList
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    enum class TypeOfList {
+        EVENTS, ORGS
     }
 }
