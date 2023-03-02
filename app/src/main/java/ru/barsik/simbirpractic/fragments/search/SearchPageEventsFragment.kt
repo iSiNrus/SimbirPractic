@@ -2,14 +2,13 @@ package ru.barsik.simbirpractic.fragments.search
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import ru.barsik.simbirpractic.R
 import ru.barsik.simbirpractic.dao.EventDAO
 import ru.barsik.simbirpractic.databinding.FragmentSearchPageEventsBinding
 
@@ -35,7 +34,7 @@ class SearchPageEventsFragment : Fragment(), SearchableFragment {
             layoutManager = LinearLayoutManager(requireContext())
 //            adapter = SearchRecyclerAdapter(
 //                resources.getStringArray(R.array.events_list).also { it.shuffle() })
-            adapter = SearchRecyclerAdapter(emptyList())
+            adapter = SearchRecyclerAdapter(emptyList(), SearchRecyclerAdapter.TypeOfList.EVENTS)
         }
     }
     override fun setSearchQuery(query: String) {
