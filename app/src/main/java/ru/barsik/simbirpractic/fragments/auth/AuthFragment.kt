@@ -29,9 +29,7 @@ class AuthFragment : Fragment() {
         val observeEmail = RxTextView.textChanges(binding.etEmail)
 
         Observable.combineLatest(observeEmail, observePass)
-        { x, y ->
-            Pair(x.toString(), y.toString())
-        }
+        { x, y -> Pair(x.toString(), y.toString()) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.btnSubmit.isEnabled = (it.first.length >= 6 && it.second.length >= 6)
