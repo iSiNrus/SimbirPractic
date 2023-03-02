@@ -4,11 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.barsik.simbirpractic.R
+import ru.barsik.simbirpractic.entity.Event
+import ru.barsik.simbirpractic.util.NewsDiffUtil
 
 class SearchRecyclerAdapter(
-    private val listItems: Array<String>
+    private var listItems: List<Event>
 ) :
     RecyclerView.Adapter<SearchRecyclerAdapter.SearchItemViewHolder>() {
 
@@ -25,6 +28,13 @@ class SearchRecyclerAdapter(
     override fun getItemCount() = listItems.size
 
     override fun onBindViewHolder(holder: SearchItemViewHolder, position: Int) {
-        holder.title.text = listItems[position]
+        holder.title.text = listItems[position].title
+    }
+
+    fun setData(newItemList: List<Event>) {
+        val diffUtil = NewsDiffUtil(listItems, newItemList)
+        val diffResult = DiffUtil.calculateDiff(diffUtil)
+        listItems = newItemList
+        diffResult.dispatchUpdatesTo(this)
     }
 }

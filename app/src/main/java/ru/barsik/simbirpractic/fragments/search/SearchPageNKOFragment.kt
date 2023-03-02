@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ru.barsik.simbirpractic.R
 import ru.barsik.simbirpractic.databinding.FragmentSearchPageNkoBinding
 
-class SearchPageNKOFragment : Fragment() {
+class SearchPageNKOFragment : Fragment(), SearchableFragment {
 
     private lateinit var binding: FragmentSearchPageNkoBinding
 
@@ -27,9 +27,14 @@ class SearchPageNKOFragment : Fragment() {
         with(binding.recyclerView) {
             addItemDecoration(DividerItemDecoration(requireContext(), 1))
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = SearchRecyclerAdapter(
-                resources.getStringArray(R.array.non_com_orgs).also { it.shuffle() })
+//            adapter = SearchRecyclerAdapter(
+//                resources.getStringArray(R.array.non_com_orgs).also { it.shuffle() })
+            adapter = SearchRecyclerAdapter(emptyList())
         }
+    }
+
+    override fun setSearchQuery(query: String) {
+
     }
 
 }

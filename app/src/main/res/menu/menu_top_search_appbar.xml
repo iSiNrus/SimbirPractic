@@ -7,5 +7,5 @@
         android:title="@string/search_title"
         android:contentDescription="@string/search_icon"
         app:showAsAction="ifRoom|collapseActionView"
-        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+        />
 </menu>

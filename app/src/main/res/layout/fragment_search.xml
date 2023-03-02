@@ -16,9 +16,18 @@
             style="@style/Theme.SimbirPractic.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:menu="@menu/menu_top_search_appbar"
             app:title="@string/search_title"
-            />
+            >
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:queryHint="Введите свою хотелку"
+                android:textAlignment="center"
+                android:iconifiedByDefault="false"
+                app:iconifiedByDefault="false"
+                />
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
