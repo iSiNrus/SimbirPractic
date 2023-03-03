@@ -39,13 +39,20 @@ class SearchPageEventsFragment : Fragment(), SearchableFragment {
     }
     override fun setSearchQuery(query: String) {
         try {
-            val resList = eventDAO.getEvents().filter { x -> x.title.contains(query, true) }
-            if (resList.isEmpty()) {
+            val resList = eventDAO.getEvents().filter{ x ->
+                x.organization.contains(query, true)
+            }
+            if(query.isEmpty()){
                 binding.searchContent.isVisible = false
                 binding.clPlaceholder.isVisible = true
             } else {
                 binding.searchContent.isVisible = true
                 binding.clPlaceholder.isVisible = false
+                if(resList.isEmpty())
+                    binding.tvResultsOfSearch.text = "Результаты поиска: Ничего не найдено"
+                else
+                    binding.tvResultsOfSearch.text = "Результаты поиска: ${resList.size} мероприятий"
+
                 (binding.recyclerView.adapter as SearchRecyclerAdapter).setData(resList)
             }
         } catch (e: Exception){

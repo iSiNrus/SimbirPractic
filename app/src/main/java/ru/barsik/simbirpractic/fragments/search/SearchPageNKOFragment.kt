@@ -44,12 +44,18 @@ class SearchPageNKOFragment : Fragment(), SearchableFragment {
             val resList = eventDAO.getEvents().filter{ x ->
                 x.organization.contains(query, true)
             }
-            if (resList.isEmpty()) {
+            if(query.isEmpty()){
                 binding.searchContent.isVisible = false
                 binding.clPlaceholder.isVisible = true
+                binding.tvResultsOfSearch.text = "Результаты поиска: Ничего не найдено"
             } else {
                 binding.searchContent.isVisible = true
                 binding.clPlaceholder.isVisible = false
+                if(resList.isEmpty())
+                    binding.tvResultsOfSearch.text = "Результаты поиска: Ничего не найдено"
+                else
+                    binding.tvResultsOfSearch.text = "Результаты поиска: ${resList.size} организации"
+
                 (binding.recyclerView.adapter as SearchRecyclerAdapter).setData(resList)
             }
         } catch (e: Exception){
