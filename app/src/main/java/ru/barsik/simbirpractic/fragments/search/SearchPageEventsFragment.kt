@@ -40,7 +40,7 @@ class SearchPageEventsFragment : Fragment(), SearchableFragment {
     override fun setSearchQuery(query: String) {
         try {
             val resList = eventDAO.getEvents().filter{ x ->
-                x.organization.contains(query, true)
+                x.title.contains(query, true)
             }
             if(query.isEmpty()){
                 binding.searchContent.isVisible = false
