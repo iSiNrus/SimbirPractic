@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         } else {
-           switchFragment(SearchFragment(), addBackStack = false, showBottomNavigation = true)
+           switchFragment(fragmentsMap["Search"] ?:SearchFragment(), addBackStack = false, showBottomNavigation = true)
         }
 
         binding.bottomNavigation.selectedItemId = R.id.navig_help
@@ -39,19 +39,19 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navig_help -> {
-                    switchFragment(CategoriesFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(fragmentsMap["Categories"] ?:CategoriesFragment(), addBackStack = false, showBottomNavigation = true)
                     true
                 }
                 R.id.navig_profile -> {
-                    switchFragment(ProfileFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(fragmentsMap["Profile"] ?:ProfileFragment(), addBackStack = false, showBottomNavigation = true)
                     true
                 }
                 R.id.navig_search -> {
-                    switchFragment(SearchFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(fragmentsMap["Search"] ?:SearchFragment(), addBackStack = false, showBottomNavigation = true)
                     true
                 }
                 R.id.navig_news -> {
-                    switchFragment(NewsFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(fragmentsMap["News"] ?:NewsFragment(), addBackStack = false, showBottomNavigation = true)
                     true
                 }
                 else -> false
@@ -119,5 +119,12 @@ class MainActivity : AppCompatActivity() {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
             }.toTypedArray()
+        val fragmentsMap = hashMapOf(
+            Pair("SearchFragment", SearchFragment()),
+            Pair("Profile", ProfileFragment()),
+            Pair("News", NewsFragment()),
+            Pair("Auth", AuthFragment()),
+            Pair("Categories", CategoriesFragment())
+        )
     }
 }

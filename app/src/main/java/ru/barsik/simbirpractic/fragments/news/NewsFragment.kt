@@ -1,15 +1,9 @@
 package ru.barsik.simbirpractic.fragments.news
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -18,11 +12,10 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import ru.barsik.simbirpractic.MainActivity
 import ru.barsik.simbirpractic.R
 import ru.barsik.simbirpractic.dao.CategoryDAO
+import ru.barsik.simbirpractic.dao.EventDAO
 import ru.barsik.simbirpractic.databinding.FragmentNewsBinding
 import ru.barsik.simbirpractic.entity.Category
 import ru.barsik.simbirpractic.entity.Event
@@ -33,44 +26,34 @@ class NewsFragment : Fragment() {
 
     private val TAG = "NewsFragment"
     private lateinit var binding: FragmentNewsBinding
-    private var eventList: ArrayList<Event>? = null
+    private lateinit var eventList: List<Event>
     private lateinit var categoriesList: List<Category>
     private lateinit var adapter: NewsEventsAdapter
-
-    var br: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent) {
-            if (intent.action == LoadEventsService.ACTION_UPDATE) {
-                // Здесь можно обновлять UI
-                eventList =
-                    Gson().fromJson(
-                        intent.extras?.getString(LoadEventsService.ACTION_UPDATE),
-                        object : TypeToken<List<Event>>() {}.type
-                    ) as ArrayList<Event>
-                (requireActivity() as MainActivity).setEvents(eventList ?: ArrayList())
-                initRecyclerView()
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        eventList = EventDAO(requireContext()).getEvents()
         categoriesList = CategoryDAO(requireContext()).getCategories()
-        adapter = NewsEventsAdapter(eventList ?: ArrayList())
+        adapter = NewsEventsAdapter(eventList)
 
         setFragmentResultListener("filter") { _, bundle ->
 
+            with(requireActivity() as MainActivity) {
+                this.switchFragment(
+                    MainActivity.fragmentsMap["News"] ?:NewsFragment(),
+                    addBackStack = false, showBottomNavigation = true)
+            }
             if (bundle.isEmpty) Log.d(TAG, "onCreateView: bundle is empty")
             else {
                 val categoriesIdList =
                     bundle.getIntegerArrayList(FilterNewsFragment.BUNDLE_CATEGORIES_ID_LIST)
 
                 if (categoriesIdList != null) {
-                    eventList = eventList?.filter { event ->
+                    eventList = eventList.filter { event ->
                         event.categories.intersect(categoriesIdList).isNotEmpty()
-                    } as ArrayList<Event>?
+                    }
                 }
             }
-            (binding.rvNews.adapter as NewsEventsAdapter).setData(eventList ?: ArrayList())
+            (binding.rvNews.adapter as NewsEventsAdapter).setData(eventList)
         }
     }
 
@@ -99,29 +82,6 @@ class NewsFragment : Fragment() {
             true
         }
 
-    }
-
-    override fun onResume() {
-        // сомнительное решение
-        if (eventList == null) eventList = (requireActivity() as MainActivity).getEvents()
-        if (eventList == null) {
-            Log.d(TAG, "onViewCreated: old List NOT Detected")
-            activity?.registerReceiver(
-                br,
-                IntentFilter().also { it.addAction(LoadEventsService.ACTION_UPDATE) })
-            Log.d(TAG, "onResume: startService")
-            (requireActivity() as MainActivity).startServiceForEvents()
-        } else
-            initRecyclerView()
-        super.onResume()
-    }
-
-    private fun initRecyclerView() {
-        binding.rvNews.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvNews.adapter = adapter
-        (binding.rvNews.adapter as NewsEventsAdapter).setData(eventList ?: ArrayList())
-        binding.pbNews.visibility = View.GONE
-        binding.rvNews.visibility = View.VISIBLE
     }
 
     private inner class NewsEventsAdapter(private var itemList: List<Event>) :
