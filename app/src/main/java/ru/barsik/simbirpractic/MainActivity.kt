@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
            switchFragment(fragmentsMap["Search"] ?:SearchFragment(), addBackStack = false, showBottomNavigation = true)
         }
 
+        binding.bottomNavigation.getOrCreateBadge(R.id.navig_news).number = 10
         binding.bottomNavigation.selectedItemId =
             savedInstanceState?.getInt(OPENED_TAB) ?: R.id.navig_help
 
