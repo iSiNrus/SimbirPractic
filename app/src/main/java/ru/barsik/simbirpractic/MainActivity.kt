@@ -33,6 +33,11 @@ class MainActivity : AppCompatActivity() {
     private var categories: ArrayList<Category>? = null
     private var events: ArrayList<Event>? = null
     private lateinit var readEventsIds: HashSet<String>
+    private var showNewsIds  = HashSet<String>()
+
+    fun setShowNewsIds(ids: HashSet<String>){
+        showNewsIds = ids
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -104,12 +109,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateReadEventsView() {
+    fun updateReadEventsView() {
         binding.bottomNavigation.getOrCreateBadge(R.id.navig_news).number =
-            ((events?.size ?: 0) - readEventsIds.size)
+            showNewsIds.count { x -> !readEventsIds.contains(x) }
     }
 
-    fun readEvent(id: Int) {
+    private fun readEvent(id: Int) {
         readEventsIds.add(id.toString())
         updateReadEventsView()
     }
@@ -135,8 +140,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        val catJsonStr = savedInstanceState?.getString(CATEGORIES_LIST)
-        val eventsJsonStr = savedInstanceState?.getString(EVENT_LIST)
+        val catJsonStr = savedInstanceState.getString(CATEGORIES_LIST)
+        val eventsJsonStr = savedInstanceState.getString(EVENT_LIST)
         if (eventsJsonStr != null)
             events = Gson().fromJson(eventsJsonStr, object : TypeToken<List<Event>>() {}.type)
         if (catJsonStr != null)
