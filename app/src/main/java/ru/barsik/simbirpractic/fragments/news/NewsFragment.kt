@@ -61,8 +61,9 @@ class NewsFragment : Fragment() {
 
             with(requireActivity() as MainActivity) {
                 this.switchFragment(
-                    MainActivity.fragmentsMap["News"] ?:NewsFragment(),
-                    addBackStack = false, showBottomNavigation = true)
+                    MainActivity.fragmentsMap["News"] ?: NewsFragment(),
+                    addBackStack = false, showBottomNavigation = true
+                )
             }
             if (bundle.isEmpty) Log.d(TAG, "onCreateView: bundle is empty")
             else {
@@ -159,12 +160,14 @@ class NewsFragment : Fragment() {
             )
 
             holder.itemView.setOnClickListener {
-                (requireActivity() as MainActivity)
-                    .switchFragment(
+                with(requireActivity() as MainActivity) {
+                    newsUpdaterPublisher.onNext(itemList[position].id)
+                    switchFragment(
                         EventInfoFragment(itemList[position]),
                         addBackStack = true,
                         showBottomNavigation = false
                     )
+                }
             }
         }
 
