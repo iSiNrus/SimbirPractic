@@ -1,5 +1,6 @@
 package ru.barsik.simbirpractic.fragments.search
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,15 +12,18 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.barsik.simbirpractic.dao.EventDAO
 import ru.barsik.simbirpractic.databinding.FragmentSearchPageNkoBinding
+import ru.barsik.simbirpractic.entity.Event
 
 class SearchPageNKOFragment : Fragment(), SearchableFragment {
 
     private lateinit var binding: FragmentSearchPageNkoBinding
     private var _eventDAO: EventDAO? = null
-    private val eventDAO : EventDAO
-        get() { if(_eventDAO==null) _eventDAO = EventDAO(requireContext())
-        return _eventDAO!!
-    }
+    private val eventDAO: EventDAO
+        get() {
+            if (_eventDAO == null) _eventDAO = EventDAO(requireContext())
+            return _eventDAO!!
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,27 +43,33 @@ class SearchPageNKOFragment : Fragment(), SearchableFragment {
         }
     }
 
+    @SuppressLint("CheckResult")
     override fun setSearchQuery(query: String) {
         try {
-            val resList = eventDAO.getEvents().filter{ x ->
-                x.organization.contains(query, true)
-            }
-            if(query.isEmpty()){
-                binding.searchContent.isVisible = false
-                binding.clPlaceholder.isVisible = true
-                binding.tvResultsOfSearch.text = "Результаты поиска: Ничего не найдено"
-            } else {
-                binding.searchContent.isVisible = true
-                binding.clPlaceholder.isVisible = false
-                if(resList.isEmpty())
+            var resList = emptyList<Event>()
+            eventDAO.getEvents().subscribe {
+                resList = it.filter { x ->
+                    x.organization.contains(query, true)
+                }
+                if (query.isEmpty()) {
+                    binding.searchContent.isVisible = false
+                    binding.clPlaceholder.isVisible = true
                     binding.tvResultsOfSearch.text = "Результаты поиска: Ничего не найдено"
-                else
-                    binding.tvResultsOfSearch.text = "Результаты поиска: ${resList.size} организации"
+                } else {
+                    binding.searchContent.isVisible = true
+                    binding.clPlaceholder.isVisible = false
+                    if (resList.isEmpty())
+                        binding.tvResultsOfSearch.text = "Результаты поиска: Ничего не найдено"
+                    else
+                        binding.tvResultsOfSearch.text =
+                            "Результаты поиска: ${resList.size} организации"
 
-                (binding.recyclerView.adapter as SearchRecyclerAdapter).setData(resList)
+                    (binding.recyclerView.adapter as SearchRecyclerAdapter).setData(resList)
+                }
             }
-        } catch (e: Exception){
-            Log.e("TAG", "setSearchQuery: CHPOK!", )
+
+        } catch (e: Exception) {
+            Log.e("TAG", "setSearchQuery: CHPOK!")
         }
     }
 

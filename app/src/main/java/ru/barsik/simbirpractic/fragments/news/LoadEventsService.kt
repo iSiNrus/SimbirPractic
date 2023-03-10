@@ -25,9 +25,10 @@ class LoadEventsService : Service() {
 
     private val task = Runnable {
         TimeUnit.SECONDS.sleep(2)
-        val eventList = EventDAO(applicationContext).getEvents()
-        jsonEventsString = Gson().toJson(eventList)
-        handler.sendMessage(Message())
+        EventDAO(applicationContext).getEvents().subscribe{ eventList->
+            jsonEventsString = Gson().toJson(eventList)
+            handler.sendMessage(Message())
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
