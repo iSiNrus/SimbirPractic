@@ -46,7 +46,12 @@ class NewsFragment : Fragment() {
                         intent.extras?.getString(LoadEventsService.ACTION_UPDATE),
                         object : TypeToken<List<Event>>() {}.type
                     ) as ArrayList<Event>
-                (requireActivity() as MainActivity).setEvents(eventList ?: ArrayList())
+                with((requireActivity() as MainActivity)) {
+                    setEvents(eventList ?: ArrayList())
+                    setShowNewsIds(eventList?.map { x -> x.id.toString() }
+                        ?.toHashSet() ?: hashSetOf())
+                    updateReadEventsView()
+                }
                 initRecyclerView()
             }
         }
@@ -61,8 +66,9 @@ class NewsFragment : Fragment() {
 
             with(requireActivity() as MainActivity) {
                 this.switchFragment(
-                    MainActivity.fragmentsMap["News"] ?:NewsFragment(),
-                    addBackStack = false, showBottomNavigation = true)
+                    MainActivity.fragmentsMap["News"] ?: NewsFragment(),
+                    addBackStack = false, showBottomNavigation = true
+                )
             }
             if (bundle.isEmpty) Log.d(TAG, "onCreateView: bundle is empty")
             else {
@@ -70,12 +76,18 @@ class NewsFragment : Fragment() {
                     bundle.getIntegerArrayList(FilterNewsFragment.BUNDLE_CATEGORIES_ID_LIST)
 
                 if (categoriesIdList != null) {
+                    eventList = (requireActivity() as MainActivity).getEvents()
                     eventList = eventList?.filter { event ->
                         event.categories.intersect(categoriesIdList).isNotEmpty()
                     } as ArrayList<Event>?
                 }
             }
             (binding.rvNews.adapter as NewsEventsAdapter).setData(eventList ?: ArrayList())
+            with((requireActivity() as MainActivity)) {
+                setShowNewsIds(eventList?.map { x -> x.id.toString() }
+                    ?.toHashSet() ?: hashSetOf())
+                updateReadEventsView()
+            }
         }
     }
 
@@ -159,12 +171,14 @@ class NewsFragment : Fragment() {
             )
 
             holder.itemView.setOnClickListener {
-                (requireActivity() as MainActivity)
-                    .switchFragment(
+                with(requireActivity() as MainActivity) {
+                    newsUpdaterPublisher.onNext(itemList[position].id)
+                    switchFragment(
                         EventInfoFragment(itemList[position]),
                         addBackStack = true,
                         showBottomNavigation = false
                     )
+                }
             }
         }
 
@@ -173,6 +187,8 @@ class NewsFragment : Fragment() {
             val diffResult = DiffUtil.calculateDiff(diffUtil)
             itemList = newItemList
             diffResult.dispatchUpdatesTo(this)
+
+
         }
 
     }

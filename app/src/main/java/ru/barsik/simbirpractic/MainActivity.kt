@@ -1,11 +1,11 @@
 package ru.barsik.simbirpractic
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -14,6 +14,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import ru.barsik.simbirpractic.databinding.ActivityMainBinding
 import ru.barsik.simbirpractic.entity.Category
 import ru.barsik.simbirpractic.entity.Event
@@ -28,6 +32,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var categories: ArrayList<Category>? = null
     private var events: ArrayList<Event>? = null
+    private lateinit var readEventsIds: HashSet<String>
+    private var showNewsIds  = HashSet<String>()
+
+    fun setShowNewsIds(ids: HashSet<String>){
+        showNewsIds = ids
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -39,34 +49,74 @@ class MainActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         } else {
-           switchFragment(fragmentsMap["Search"] ?:SearchFragment(), addBackStack = false, showBottomNavigation = true)
+            switchFragment(
+                fragmentsMap["News"] ?: SearchFragment(),
+                addBackStack = false,
+                showBottomNavigation = true
+            )
         }
-
+        val prefs = getSharedPreferences(APP_PREFS, MODE_PRIVATE)
+        readEventsIds = prefs.getStringSet(READ_EVENTS, HashSet<String>()) as HashSet<String>
         binding.bottomNavigation.selectedItemId =
-            savedInstanceState?.getInt(OPENED_TAB) ?: R.id.navig_help
+            savedInstanceState?.getInt(OPENED_TAB) ?: R.id.navig_news
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navig_help -> {
-                    switchFragment(fragmentsMap["Categories"] ?:CategoriesFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(
+                        fragmentsMap["Categories"] ?: CategoriesFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
                     true
                 }
                 R.id.navig_profile -> {
-                    switchFragment(fragmentsMap["Profile"] ?:ProfileFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(
+                        fragmentsMap["Profile"] ?: ProfileFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
                     true
                 }
                 R.id.navig_search -> {
-                    switchFragment(fragmentsMap["Search"] ?:SearchFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(
+                        fragmentsMap["Search"] ?: SearchFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
                     true
                 }
                 R.id.navig_news -> {
-                    switchFragment(fragmentsMap["News"] ?:NewsFragment(), addBackStack = false, showBottomNavigation = true)
+                    switchFragment(
+                        fragmentsMap["News"] ?: NewsFragment(),
+                        addBackStack = false,
+                        showBottomNavigation = true
+                    )
                     true
                 }
                 else -> false
             }
         }
 
+    }
+
+    @SuppressLint("CheckResult")
+    val newsUpdaterPublisher: Subject<Int> = PublishSubject.create<Int>().apply {
+        observeOn(AndroidSchedulers.mainThread())
+        subscribeOn(Schedulers.computation())
+        subscribe {
+            readEvent(it)
+        }
+    }
+
+    fun updateReadEventsView() {
+        binding.bottomNavigation.getOrCreateBadge(R.id.navig_news).number =
+            showNewsIds.count { x -> !readEventsIds.contains(x) }
+    }
+
+    private fun readEvent(id: Int) {
+        readEventsIds.add(id.toString())
+        updateReadEventsView()
     }
 
     fun getCategories() = categories
@@ -79,6 +129,7 @@ class MainActivity : AppCompatActivity() {
 
     fun setEvents(events: ArrayList<Event>) {
         this.events = events
+        updateReadEventsView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -89,8 +140,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        val catJsonStr = savedInstanceState?.getString(CATEGORIES_LIST)
-        val eventsJsonStr = savedInstanceState?.getString(EVENT_LIST)
+        val catJsonStr = savedInstanceState.getString(CATEGORIES_LIST)
+        val eventsJsonStr = savedInstanceState.getString(EVENT_LIST)
         if (eventsJsonStr != null)
             events = Gson().fromJson(eventsJsonStr, object : TypeToken<List<Event>>() {}.type)
         if (catJsonStr != null)
@@ -124,6 +175,12 @@ class MainActivity : AppCompatActivity() {
 
     fun showNavigation() {
         binding.bottomNavigation.visibility = View.VISIBLE
+    }
+
+    override fun onPause() {
+        val prefs = getSharedPreferences(APP_PREFS, MODE_PRIVATE)
+        prefs.edit().putStringSet(READ_EVENTS, readEventsIds).apply()
+        super.onPause()
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -163,7 +220,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }.toTypedArray()
         val fragmentsMap = hashMapOf(
-            Pair("SearchFragment", SearchFragment()),
+            Pair("Search", SearchFragment()),
             Pair("Profile", ProfileFragment()),
             Pair("News", NewsFragment()),
             Pair("Auth", AuthFragment()),
@@ -173,5 +230,7 @@ class MainActivity : AppCompatActivity() {
         private const val CATEGORIES_LIST = "CATEGORIES_LIST"
         private const val EVENT_LIST = "EVENT_LIST"
         private const val OPENED_TAB = "OPENED_TAB"
+        const val APP_PREFS = "App_Prefs"
+        const val READ_EVENTS = "Read_events"
     }
 }
