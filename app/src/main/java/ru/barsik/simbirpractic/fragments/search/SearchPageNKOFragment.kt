@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.flow.Flow
 import ru.barsik.simbirpractic.dao.EventDAO
 import ru.barsik.simbirpractic.databinding.FragmentSearchPageNkoBinding
 import ru.barsik.simbirpractic.entity.Event
@@ -44,7 +45,7 @@ class SearchPageNKOFragment : Fragment(), SearchableFragment {
     }
 
     @SuppressLint("CheckResult")
-    override fun setSearchQuery(query: String) {
+    override suspend fun setSearchQuery(query: String) {
         try {
             var resList = emptyList<Event>()
             eventDAO.getEvents().subscribe {
