@@ -9,5 +9,7 @@ data class Category(
     val id : Int,
     val title : String,
     @SerializedName("icon_path")
-    val iconPath: String
-) : Parcelable
+    val icon_path: String
+) : Parcelable {
+    constructor() : this(-1, "None", "None")
+}

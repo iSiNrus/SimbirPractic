@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.google.android.material.snackbar.Snackbar
 import ru.barsik.simbirpractic.MainActivity
 import ru.barsik.simbirpractic.R
 import ru.barsik.simbirpractic.dao.CategoryDAO
@@ -36,8 +37,9 @@ class CategoriesFragment() : Fragment() {
     }
 
     private val handler = Handler(Looper.getMainLooper()) {
-        (requireActivity() as MainActivity).setCategories(categories?: ArrayList())
+        (requireActivity() as MainActivity).setCategories(categories ?: ArrayList())
         initRecyclerView()
+        Snackbar.make(binding.root, "Taken from file", Snackbar.LENGTH_SHORT).show()
         return@Handler true
     }
 
@@ -53,16 +55,24 @@ class CategoriesFragment() : Fragment() {
     override fun onResume() {
         categories = (requireActivity() as MainActivity).getCategories()
         if (categories == null) {
-            Log.d(TAG, "onViewCreated: old List NOT Detected")
-            val executor = Executors.newFixedThreadPool(1)
-            executor.submit(task)
+            val categoryDAO = CategoryDAO(requireContext())
+            val t = categoryDAO.getCategoryFromServer()
+                .subscribe({
+                    categories = it as ArrayList<Category>
+                    initRecyclerView()
+                    Snackbar.make(binding.root, "Taken from Firebase", Snackbar.LENGTH_SHORT).show()
+                }, {
+                    Log.e(TAG, "error on server observer: ${it.message}", it)
+                    val executor = Executors.newFixedThreadPool(1)
+                    executor.submit(task)
+                })
         } else
             initRecyclerView()
         super.onResume()
     }
 
     private fun initRecyclerView() {
-        val categList = categories?.map { Pair(it.title, it.iconPath) }?.toList() ?: ArrayList()
+        val categList = categories?.map { Pair(it.title, it.icon_path) }?.toList() ?: ArrayList()
         binding.categoryRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.categoryRecyclerview.adapter = CategoryItemAdapter(categList)
         binding.progressBarCategories.visibility = View.GONE
