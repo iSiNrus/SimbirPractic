@@ -13,4 +13,19 @@ data class Event(
     val org_site: String,
     val title_img_path: String,
     val categories: List<Int>
-)
+) {
+    constructor() : this(
+        -1,
+        "None",
+        0,
+        0,
+        "None",
+        "None",
+        emptyList<String>(),
+        "None",
+        "None",
+        "None",
+        "None",
+        listOf(1)
+    )
+}
