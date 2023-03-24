@@ -18,6 +18,9 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ru.barsik.simbirpractic.MainActivity
@@ -162,13 +165,22 @@ class NewsFragment : Fragment() {
             holder.title.text = itemList[position].title
             holder.description.text = itemList[position].description
             holder.remainTime.text = "Not supported yet"
-            holder.image.setImageBitmap(
-                BitmapFactory.decodeStream(
-                    requireContext().resources.assets.open(
-                        itemList[position].title_img_path
+            val picFirebase = Firebase.storage
+            picFirebase.maxOperationRetryTimeMillis = 2000
+            val ref = picFirebase.getReference(itemList[position].title_img_path)
+            ref.downloadUrl.addOnSuccessListener {
+                Log.d(TAG, "onBindViewHolder: Success")
+                holder.image.load(it)
+            }.addOnFailureListener {
+                Log.d(TAG, "onBindViewHolder: Failure")
+                holder.image.setImageBitmap(
+                    BitmapFactory.decodeStream(
+                        requireContext().resources.assets.open(
+                            itemList[position].title_img_path
+                        )
                     )
                 )
-            )
+            }
 
             holder.itemView.setOnClickListener {
                 with(requireActivity() as MainActivity) {
