@@ -15,7 +15,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import coil.load
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import ru.barsik.simbirpractic.MainActivity
 import ru.barsik.simbirpractic.R
 import ru.barsik.simbirpractic.dao.CategoryDAO
@@ -97,13 +100,22 @@ class CategoriesFragment() : Fragment() {
 
         override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
             holder.title.text = categoryList[position].first
-            holder.image.setImageBitmap(
-                BitmapFactory.decodeStream(
-                    resources.assets.open(
-                        categoryList[position].second
+            val picFirebase = Firebase.storage
+            picFirebase.maxOperationRetryTimeMillis = 2000
+            val ref = picFirebase.getReference(categoryList[position].second)
+            ref.downloadUrl.addOnSuccessListener {
+                Log.d(TAG, "onBindViewHolder: Success")
+                holder.image.load(it)
+            }.addOnFailureListener {
+                Log.d(TAG, "onBindViewHolder: Failure")
+                holder.image.setImageBitmap(
+                    BitmapFactory.decodeStream(
+                        resources.assets.open(
+                            categoryList[position].second
+                        )
                     )
                 )
-            )
+            }
         }
 
     }
