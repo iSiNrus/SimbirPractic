@@ -172,7 +172,7 @@ class NewsFragment : Fragment() {
 
             holder.itemView.setOnClickListener {
                 with(requireActivity() as MainActivity) {
-                    newsUpdaterPublisher.onNext(itemList[position].id)
+                    newsUpdaterFlow.value = (itemList[position].id)
                     switchFragment(
                         EventInfoFragment(itemList[position]),
                         addBackStack = true,

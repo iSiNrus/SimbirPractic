@@ -44,7 +44,7 @@ class SearchPageEventsFragment : Fragment(), SearchableFragment {
     }
 
     @SuppressLint("CheckResult")
-    override fun setSearchQuery(query: String) {
+    override suspend fun setSearchQuery(query: String) {
         try {
             var resList = emptyList<Event>()
             eventDAO.getEvents().subscribe {

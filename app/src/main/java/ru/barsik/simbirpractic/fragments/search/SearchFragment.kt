@@ -6,16 +6,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
-import com.jakewharton.rxbinding.widget.RxSearchView
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
-import io.reactivex.rxjava3.subjects.PublishSubject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import ru.barsik.simbirpractic.databinding.FragmentSearchBinding
-import java.util.concurrent.TimeUnit
 
 
 class SearchFragment : Fragment() {
@@ -23,19 +20,17 @@ class SearchFragment : Fragment() {
     private val TAG = "SearchFragment"
     private lateinit var binding: FragmentSearchBinding
     private lateinit var pagerAdapter: SearchPagerAdapter
-    private val publish: PublishSubject<String> = PublishSubject.create()
+    private val flow = MutableStateFlow("")
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        publish.debounce(500, TimeUnit.MILLISECONDS)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                Log.d(TAG, "subsciber: $it")
-                pagerAdapter.getFragmentByPos(binding.tabLayout.selectedTabPosition)
-                    .setSearchQuery(it)
-            }
+
+        flow.debounce(500).onEach {
+            Log.d(TAG, "onEach: $it")
+            pagerAdapter.getFragmentByPos(binding.tabLayout.selectedTabPosition)
+                .setSearchQuery(it)
+        }.launchIn(CoroutineScope(Dispatchers.Default))
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,13 +48,13 @@ class SearchFragment : Fragment() {
         binding.searchView.setOnQueryTextListener(object : OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.d(TAG, "onQueryTextSubmit: GOT IT! $query")
-                publish.onNext(query?:"")
+                flow.value = query?:""
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 Log.d(TAG, "onQueryTextSubmit: chpok: $newText")
-                publish.onNext(newText?:"")
+                flow.value = newText?:""
                 return true
             }
 

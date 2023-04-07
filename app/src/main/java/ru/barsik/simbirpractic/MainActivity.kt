@@ -1,11 +1,11 @@
 package ru.barsik.simbirpractic
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -14,30 +14,37 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
-import io.reactivex.rxjava3.subjects.PublishSubject
-import io.reactivex.rxjava3.subjects.Subject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import ru.barsik.simbirpractic.databinding.ActivityMainBinding
 import ru.barsik.simbirpractic.entity.Category
 import ru.barsik.simbirpractic.entity.Event
 import ru.barsik.simbirpractic.fragments.CategoriesFragment
-import ru.barsik.simbirpractic.fragments.news.LoadEventsService
 import ru.barsik.simbirpractic.fragments.auth.AuthFragment
+import ru.barsik.simbirpractic.fragments.news.LoadEventsService
 import ru.barsik.simbirpractic.fragments.news.NewsFragment
 import ru.barsik.simbirpractic.fragments.profile.ProfileFragment
 import ru.barsik.simbirpractic.fragments.search.SearchFragment
+import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity() {
+    private val TAG = "MainActivity"
     private lateinit var binding: ActivityMainBinding
     private var categories: ArrayList<Category>? = null
     private var events: ArrayList<Event>? = null
     private lateinit var readEventsIds: HashSet<String>
-    private var showNewsIds  = HashSet<String>()
+    private var showNewsIds = HashSet<String>()
+    val newsUpdaterFlow: MutableStateFlow<Int?> = MutableStateFlow(null)
 
     fun setShowNewsIds(ids: HashSet<String>){
         showNewsIds = ids
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -98,15 +105,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    }
-
-    @SuppressLint("CheckResult")
-    val newsUpdaterPublisher: Subject<Int> = PublishSubject.create<Int>().apply {
-        observeOn(AndroidSchedulers.mainThread())
-        subscribeOn(Schedulers.computation())
-        subscribe {
-            readEvent(it)
-        }
+        newsUpdaterFlow.onEach {
+            if (it != null) {
+            withContext(Dispatchers.Default) {
+                    Log.d(TAG, "onEach: $it")
+                    readEvent(it)
+                }
+            }
+        }.launchIn(CoroutineScope(Dispatchers.Default))
     }
 
     fun updateReadEventsView() {
@@ -114,7 +120,7 @@ class MainActivity : AppCompatActivity() {
             showNewsIds.count { x -> !readEventsIds.contains(x) }
     }
 
-    private fun readEvent(id: Int) {
+    private suspend fun readEvent(id: Int) {
         readEventsIds.add(id.toString())
         updateReadEventsView()
     }
